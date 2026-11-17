@@ -1,0 +1,12 @@
+# Render Blueprint: New > Blueprint > pick this repository.
+services:
+  - type: web
+    name: nightfall
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
