@@ -16,6 +16,5 @@ COPY server ./server
 COPY src ./src
 ENV PORT=8787
 ENV DATA_FILE=/data/store.json
-VOLUME ["/data"]
 EXPOSE 8787
 CMD ["npx", "tsx", "server/index.ts"]
