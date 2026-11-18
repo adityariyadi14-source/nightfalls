@@ -49,10 +49,8 @@ Pilih salah satu cara.
 **Cara termudah (tanpa terminal):**
 
 1. Masuk ke <https://github.com>, klik **New repository**, beri nama `nightfall`, pilih **Private** atau **Public**, lalu **Create repository**.
-2. **Ekstrak dulu** `nightfall-github.zip` di komputermu. Jangan upload file zip-nya, karena GitHub tidak membuka zip.
-3. Di halaman repo, klik **Add file → Upload files**.
-4. Buka folder hasil ekstrak, pilih **semua isinya** (`Ctrl+A` / `Cmd+A`: `docs`, `src`, `server`, `package.json`, dan seterusnya), lalu seret ke halaman GitHub. Jumlahnya 87 file, masih di bawah batas 100 file per upload.
-5. Klik **Commit changes**. Di halaman repo sekarang harus terlihat folder `docs`, `src`, `server`, dan file `package.json`.
+2. Di halaman repo baru, klik **uploading an existing file**.
+3. Seret **isi** folder `nightfall` (bukan folder `node_modules` atau `dist`) ke halaman itu, lalu **Commit changes**.
 
 **Cara dengan Git:**
 
@@ -82,15 +80,26 @@ git push -u origin main
 
 ---
 
-## 2b. GitHub Pages: versi main satu HP (gratis, tanpa server)
+## 2c. Vercel untuk tampilan + Render untuk server (online penuh)
 
-GitHub Pages hanya menyajikan file statis, jadi **mode online tidak bisa jalan di sana**. Tapi Pages cocok untuk versi oper-HP (offline), yang sudah disiapkan di `docs/index.html`.
+**Penting:** Vercel menjalankan fungsi serverless yang mati setelah request selesai, jadi **tidak bisa** menjalankan server WebSocket game (`server/index.ts`). Pembagiannya:
 
-1. Di repo, buka **Settings → Pages**.
-2. **Source:** Deploy from a branch. **Branch:** `main`, folder **`/docs`** (bukan `/ (root)`), lalu **Save**.
-3. Tunggu 1–2 menit, lalu buka `https://USERNAME.github.io/NAMA-REPO/`.
+- **Render (atau Railway/VPS):** menjalankan server game. Ikuti bagian 3 di bawah.
+- **Vercel:** hanya menyajikan website (frontend), yang menyambung ke server Render.
 
-Untuk main online bareng dari HP masing-masing, lanjut ke Render di bawah. Repo yang sama bisa dipakai untuk keduanya.
+Langkah:
+
+1. Deploy server dulu di Render (bagian 3). Catat alamatnya, misalnya `https://nightfall-xxxx.onrender.com`. Cek `https://nightfall-xxxx.onrender.com/api/health` harus menjawab `{"ok":true,...}`.
+2. Di Vercel: **Add New → Project**, pilih repo ini. Framework otomatis terbaca Vite (pengaturannya sudah ada di `vercel.json`).
+3. Buka **Environment Variables**, tambah:
+   - **Name:** `VITE_WS_URL`
+   - **Value:** `wss://nightfall-xxxx.onrender.com/ws` (pakai `wss://`, ganti `xxxx` dengan alamat Render-mu, akhiri dengan `/ws`)
+4. Klik **Deploy**. Kalau nanti mengubah `VITE_WS_URL`, lakukan **Redeploy**, karena nilainya ditanam saat build.
+5. Buka link Vercel, **Main sekarang → Buat ruangan**, lalu kirim kode atau tautannya ke teman.
+
+Server Render gratis yang sedang tidur butuh 30-60 detik untuk bangun. Selama itu, tampilan menunjukkan "Menghubungkan ke server" dan menyambung sendiri.
+
+---
 
 ## 3. Pilihan A: Render (gratis, paling mudah) ⭐ disarankan
 
@@ -190,7 +199,6 @@ Setiap kali kode diubah lalu di-push ke GitHub (atau di-upload ulang lewat web),
 | Jalankan produksi | `npm start` |
 | Semua tes | `npm run test:all` |
 | Versi satu file (main lokal tanpa server) | `npm run build:artifact` |
-| Perbarui `docs/index.html` untuk GitHub Pages | `npm run build:pages` |
 
 Environment variable yang bisa diatur:
 

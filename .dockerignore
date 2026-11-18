@@ -1,0 +1,6 @@
+node_modules
+dist
+artifact
+release
+server/data
+*.log
